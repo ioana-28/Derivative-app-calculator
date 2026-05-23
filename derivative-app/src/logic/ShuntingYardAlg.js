@@ -213,12 +213,12 @@ export function buildTreeFromPostfix(postfix) {
             stack.push(new ExprTreeNode(token)); //
         } else if (FUNCTIONS.has(token)) {
             const arg = stack.pop();
-            stack.push(new ExprTreeNode(token, null, arg)); //
+            stack.push(new ExprTreeNode(token, null, arg)); 
         } else {
             const right = stack.pop();
             const left = stack.pop();
             if (left && right) {
-                stack.push(new ExprTreeNode(token, left, right)); //
+                stack.push(new ExprTreeNode(token, left, right)); 
             }
         }
     });

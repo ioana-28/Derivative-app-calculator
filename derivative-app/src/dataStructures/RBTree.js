@@ -1,4 +1,3 @@
-// Node structure with explicit pointers for tree navigation
 class Node {
     constructor(key, value) {
         this.key = key;
@@ -14,6 +13,9 @@ export default class RBTree {
     constructor() {
         this.NIL = new Node(0, null);
         this.NIL.color = "BLACK";
+        this.NIL.left = this.NIL;
+        this.NIL.right = this.NIL;
+        this.NIL.parent = this.NIL;
         this.root = this.NIL;
     }
 
@@ -28,7 +30,7 @@ export default class RBTree {
         }
         y.parent = x.parent;
 
-        if (x.parent === null) {
+        if (x.parent === this.NIL) {
             this.root = y;
         } else if (x === x.parent.left) {
             x.parent.left = y;
@@ -49,7 +51,7 @@ export default class RBTree {
         }
         y.parent = x.parent;
 
-        if (x.parent === null) {
+        if (x.parent === this.NIL) {
             this.root = y;
         } else if (x === x.parent.right) {
             x.parent.right = y;
@@ -61,7 +63,6 @@ export default class RBTree {
         x.parent = y;
     }
 
-    // --- RB Fix-up: Resolves Double-Red violations ---
 
     fixInsert(k) {
         while (k !== this.root && k.parent.color === "RED") {
@@ -110,7 +111,7 @@ export default class RBTree {
         node.left = this.NIL;
         node.right = this.NIL;
 
-        let parent = null;
+        let parent = this.NIL;
         let current = this.root;
 
         
@@ -125,7 +126,7 @@ export default class RBTree {
 
         node.parent = parent;
 
-        if (parent === null) {
+        if (parent === this.NIL) {
             this.root = node;
         } else if (node.key < parent.key) {
             parent.left = node;
@@ -134,18 +135,18 @@ export default class RBTree {
         }
 
 
-        if (node.parent === null) {
+        if (node.parent === this.NIL) {
             node.color = "BLACK";
             return;
         }
-        if (node.parent.parent === null) {
+        if (node.parent.parent === this.NIL) {
             return;
         }
 
         this.fixInsert(node);
     }
 
-    inorder(node, result = []) {
+    inorder(node = this.root, result = []) {
         if (node !== this.NIL) {
             this.inorder(node.left, result);
             result.push(`${node.key}(${node.color})`);
@@ -163,17 +164,18 @@ export default class RBTree {
     return null;
     }
 
-    // Add this to your RBTree class in RBTree.js
-getDetailedEntries(node = this.root, result = []) {
-    if (node !== this.NIL) {
-        this.getDetailedEntries(node.left, result);
-        result.push({
-            key: node.key,
-            value: node.value, // This is the ExprTreeNode
-            color: node.color
-        });
-        this.getDetailedEntries(node.right, result);
+
+    getDetailedEntries(node = this.root, result = []) {
+        if (node !== this.NIL) {
+            this.getDetailedEntries(node.left, result);
+            result.push({
+                key: node.key,
+                value: node.value, // This is the ExprTreeNode
+                color: node.color
+            });
+            this.getDetailedEntries(node.right, result);
+        }
+        return result;
     }
-    return result;
-}
+
 }

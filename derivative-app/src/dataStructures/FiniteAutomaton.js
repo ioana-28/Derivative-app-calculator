@@ -66,6 +66,6 @@ export default class FiniteAutomaton {
         this.tokens.push(this.currentToken);
         this.currentToken = '';
         this.currentState = 'START';
-        this.index--; // Rewind to process the character that broke the state
+        this.index--; 
     }
 }

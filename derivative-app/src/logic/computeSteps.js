@@ -1,19 +1,9 @@
 import ExprTreeNode from '../dataStructures/ExprTreeNode.js';
-import { simplifyOnce } from '../logic/simplify.js';
-import printExpression from '../logic/printExpression.js';
+import { simplifyOnce } from './simplify.js';
+import printExpression from './printExpression.js';
 
 const DERIVATIVE_OP = "D";
 
-// Helper to capture a visual snapshot of the RBTree structure at this specific step
-// function snapshotRBTree(node, nilNode) {
-//     if (!node || node === nilNode) return null;
-//     return {
-//         key: node.key,
-//         color: node.color,
-//         left: snapshotRBTree(node.left, nilNode),
-//         right: snapshotRBTree(node.right, nilNode)
-//     };
-// }
 
 // Helper to capture a visual snapshot of the RBTree structure at this specific step
 function snapshotRBTree(node, nilNode) {

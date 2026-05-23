@@ -5,7 +5,7 @@ import ReactFlow, { Background, Controls } from 'reactflow';
 import { hierarchy, tree as d3Tree } from 'd3-hierarchy';
 import { parseExpression } from './logic/ShuntingYardAlg';
 import printExpression from './logic/printExpression';
-import { getDerivativeSteps, getSimplificationSteps } from './utility/computeSteps';
+import { getDerivativeSteps, getSimplificationSteps } from './logic/computeSteps';
 import RBTree from './dataStructures/RBTree';
 
 function buildHierarchy(node, path = "n") {
@@ -114,18 +114,66 @@ function buildRBHierarchyFromSnapshot(snapshotNode, path = "rb") {
     return data;
 }
 
+const RB_NODE_MIN_WIDTH = 180;
+const RB_NODE_MAX_WIDTH = 360;
+const RB_NODE_MIN_HEIGHT = 88;
+const RB_NODE_HORIZONTAL_PADDING = 44;
+const RB_NODE_VERTICAL_PADDING = 30;
+const RB_TREE_HORIZONTAL_GAP = 90;
+const RB_TREE_VERTICAL_GAP = 80;
+
+function estimateRBNodeSize(snapshotNode) {
+    const keyText = String(snapshotNode.key ?? "");
+    const valueText = String(snapshotNode.computedValue ?? "");
+    const longestTextLength = Math.max(keyText.length, valueText.length);
+
+    const width = Math.min(
+        RB_NODE_MAX_WIDTH,
+        Math.max(RB_NODE_MIN_WIDTH, Math.ceil(longestTextLength * 8) + RB_NODE_HORIZONTAL_PADDING)
+    );
+
+    const approxCharsPerLine = Math.max(14, Math.floor((width - RB_NODE_HORIZONTAL_PADDING) / 7.5));
+    const keyLines = Math.max(1, Math.ceil(keyText.length / approxCharsPerLine));
+    const valueLines = Math.max(1, Math.ceil(valueText.length / approxCharsPerLine));
+    const height = Math.max(
+        RB_NODE_MIN_HEIGHT,
+        keyLines * 20 + valueLines * 22 + RB_NODE_VERTICAL_PADDING
+    );
+
+    return { width, height };
+}
+
+function measureRBTree(snapshotNode) {
+    if (!snapshotNode) return { width: RB_NODE_MIN_WIDTH, height: RB_NODE_MIN_HEIGHT };
+
+    const current = estimateRBNodeSize(snapshotNode);
+    const left = measureRBTree(snapshotNode.left);
+    const right = measureRBTree(snapshotNode.right);
+
+    return {
+        width: Math.max(current.width, left.width, right.width),
+        height: Math.max(current.height, left.height, right.height)
+    };
+}
+
 function buildRBFlowData(snapshotRoot) {
     const hierarchyData = buildRBHierarchyFromSnapshot(snapshotRoot);
     if (!hierarchyData) return { nodes: [], edges: [] };
 
+    const { width: nodeWidth, height: nodeHeight } = measureRBTree(snapshotRoot);
+
     const root = hierarchy(hierarchyData, (d) => d.children);
-    const layout = d3Tree().nodeSize([240, 130]); 
+    const layout = d3Tree().nodeSize([nodeWidth + RB_TREE_HORIZONTAL_GAP, nodeHeight + RB_TREE_VERTICAL_GAP]); 
     layout(root);
 
     const nodes = root.descendants().map((d) => ({
         id: d.data.id,
         data: { label: d.data.label },
         position: { x: d.x, y: d.y },
+        style: {
+            width: `${nodeWidth}px`,
+            minHeight: `${nodeHeight}px`
+        },
         className: d.data.rbColor === "RED" ? "rb-node-red" : "rb-node-black"
     }));
 
