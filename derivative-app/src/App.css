@@ -227,6 +227,11 @@ hr {
 
 .tree-panel .react-flow {
   background: transparent;
+  cursor: grab;
+}
+
+.tree-panel .react-flow:active {
+  cursor: grabbing;
 }
 
 .react-flow__node.flow-node {

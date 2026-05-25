@@ -338,7 +338,7 @@ function App() {
                             nodesDraggable={false}
                             nodesConnectable={false}
                             elementsSelectable={false}
-                            panOnDrag={false}
+                            panOnDrag={true}
                             zoomOnScroll={false}
                             zoomOnPinch={false}
                             zoomOnDoubleClick={false}
