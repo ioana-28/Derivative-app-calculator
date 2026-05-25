@@ -165,17 +165,5 @@ export default class RBTree {
     }
 
 
-    getDetailedEntries(node = this.root, result = []) {
-        if (node !== this.NIL) {
-            this.getDetailedEntries(node.left, result);
-            result.push({
-                key: node.key,
-                value: node.value,
-                color: node.color
-            });
-            this.getDetailedEntries(node.right, result);
-        }
-        return result;
-    }
 
 }

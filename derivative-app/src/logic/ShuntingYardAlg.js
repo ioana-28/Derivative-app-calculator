@@ -1,7 +1,7 @@
 import ExprTreeNode from '../dataStructures/ExprTreeNode.js';
 import FiniteAutomaton from '../dataStructures/FiniteAutomaton.js';
 
-// Recognized functions (Unary Operators - 1 child)
+// Recognized functions (Unary Operators)
 const FUNCTIONS = new Set(["cos", "sin", "ln", "tan", "sqrt", "-cos", "-sin", "-ln", "-tan", "-sqrt"]);
 
 
@@ -84,7 +84,7 @@ export function buildTreeFromPostfix(postfix) {
     const stack = [];
     postfix.forEach(token => {
         if (!isNaN(token) || ["x", "-x", "e", "-e"].includes(token)) {
-            stack.push(new ExprTreeNode(token)); //
+            stack.push(new ExprTreeNode(token)); 
         } else if (FUNCTIONS.has(token)) {
             const arg = stack.pop();
             stack.push(new ExprTreeNode(token, null, arg)); 

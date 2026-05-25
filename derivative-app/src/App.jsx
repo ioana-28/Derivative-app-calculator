@@ -188,7 +188,7 @@ function buildRBFlowData(snapshotRoot) {
 }
 
 function App() {
-    const [inputString, setInputString] = useState("x^2 + 5x + 10");
+    const [inputString, setInputString] = useState("x^2 + sin(x^2)");
     const [steps, setSteps] = useState([]);
     const [index, setIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
