@@ -77,12 +77,12 @@ export function simplifyOnce(node) {
 export function simplify(node) {
     if (!node) return null;
 
-    // 1. Recursively simplify children first
+    // Recursively simplify children first
     const left = simplify(node.left);
     const right = simplify(node.right);
     const val = node.value;
 
-    // 2. Constant Folding: If both children are numbers, perform the math
+    // If both children are numbers, perform the math
     if (left && isNumberValue(left.value) && right && isNumberValue(right.value)) {
         const l = parseFloat(left.value);
         const r = parseFloat(right.value);
@@ -93,7 +93,7 @@ export function simplify(node) {
         if (val === "^") return new ExprTreeNode(Math.pow(l, r).toString());
     }
 
-    // 3. Algebraic Identities
+    
     if (val === "+") {
         if (left?.value === "0") return right; // 0 + f = f
         if (right?.value === "0") return left;  // f + 0 = f
@@ -116,6 +116,6 @@ export function simplify(node) {
         if (left?.value === "0") return new ExprTreeNode("0"); // 0 ^ f = 0
     }
 
-    // 4. Return the node with simplified children
+    // Return the node with simplified children
     return new ExprTreeNode(val, left, right);
 }

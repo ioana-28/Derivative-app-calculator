@@ -160,8 +160,8 @@ export default class RBTree {
         while (current !== this.NIL) {
             if (key === current.key) return current.value;
             current = key < current.key ? current.left : current.right;
-    }
-    return null;
+        }
+        return null;
     }
 
 
@@ -170,7 +170,7 @@ export default class RBTree {
             this.getDetailedEntries(node.left, result);
             result.push({
                 key: node.key,
-                value: node.value, // This is the ExprTreeNode
+                value: node.value,
                 color: node.color
             });
             this.getDetailedEntries(node.right, result);

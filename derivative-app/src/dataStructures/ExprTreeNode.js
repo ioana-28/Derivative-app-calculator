@@ -5,18 +5,6 @@ class ExprTreeNode {
         this.right = right;
     }
 
-    visualize(prefix = "", isLeft = true) {
-        console.log(`${prefix}${isLeft ? "├── " : "└── "}${this.value}`);
-        
-        const nextPrefix = `${prefix}${isLeft ? "│   " : "    "}`;
-        
-        if (this.left) {
-            this.left.visualize(nextPrefix, true);
-        }
-        if (this.right) {
-            this.right.visualize(nextPrefix, false);
-        }
-    }
 
     clone() {
         const newNode = new ExprTreeNode(this.value);
@@ -32,12 +20,12 @@ class ExprTreeNode {
             children: []
         };
 
-        // If a left child exists, recursively format it
+    
         if (this.left) {
             nodeData.children.push(this.left.toD3Format());
         }
 
-        // If a right child exists, recursively format it
+
         if (this.right) {
             nodeData.children.push(this.right.toD3Format());
         }

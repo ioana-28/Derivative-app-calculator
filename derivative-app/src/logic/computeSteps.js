@@ -9,7 +9,6 @@ const DERIVATIVE_OP = "D";
 function snapshotRBTree(node, nilNode) {
     if (!node || node === nilNode) return null;
     
-    // Self-contained inline printer to guarantee flawless expression stringification
     const stringifyExpression = (exprNode) => {
         if (!exprNode) return "";
         if (!exprNode.left && !exprNode.right) return exprNode.value?.toString() ?? "";

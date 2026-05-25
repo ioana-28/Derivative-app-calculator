@@ -4,153 +4,19 @@ import FiniteAutomaton from '../dataStructures/FiniteAutomaton.js';
 // Recognized functions (Unary Operators - 1 child)
 const FUNCTIONS = new Set(["cos", "sin", "ln", "tan", "sqrt", "-cos", "-sin", "-ln", "-tan", "-sqrt"]);
 
-// export function tokenize(str) {
-   
-//     let processed = str.replace(/\s+/g, "");
-//     processed = processed.replace(/(\d)(?=[a-z\(])/gi, "$1*");  // 2x -> 2*x, 2( -> 2*(
-//     processed = processed.replace(/(\))(?=[\dx\(])/gi, "$1*"); // )2 -> )*2, )x -> )*x, )( -> )*(
-//     processed = processed.replace(/(x)(?=\()/gi, "$1*");        // x( -> x*(
-
-//     console.log("After Implied Multiplication:", processed); // Debugging output
-
-//     // Tokenization using regex
-//     const tokenRegex = /\d+(?:\.\d*)?(?:e[+-]?\d+)?|[a-z]+|[+\-*/^()]/gi;
-//     const rawTokens = processed.match(tokenRegex) || [];
-    
-//     const tokens = [];
-//     for (let i = 0; i < rawTokens.length; i++) {
-//         let token = rawTokens[i];
-//         const prev = tokens[tokens.length - 1];
-
-//         // Handle Unary Minuses (e.g., -cos, -x, -5)
-//         if (token === "-" && (!prev || "+-*/^(".includes(prev))) {
-//             const next = rawTokens[i + 1];
-//             if (next && !"+-*/^()".includes(next)) {
-//                 tokens.push("-" + next);
-//                 i++; 
-//                 continue;
-//             }
-//         }
-//         tokens.push(token);
-//     }
-//     return tokens;
-// }
-
-
-
-// export function tokenize(str) {
-//     // Implied Multiplication
-//     let processed = str.replace(/\s+/g, "");
-//     processed = processed.replace(/(\d)(?=[a-z\(])/gi, "$1*"); 
-//     processed = processed.replace(/(\))(?=[\dx\(])/gi, "$1*"); 
-//     processed = processed.replace(/(x)(?=\()/gi, "$1*");
-
-//     const tokens = [];
-//     let currentState = 'START';
-//     let currentToken = '';
-
-//     // Helper functions for character types
-//     const isDigit = (c) => c >= '0' && c <= '9';
-//     const isLetter = (c) => /[a-z]/i.test(c);
-//     const isOperator = (c) => "+-*/^()".includes(c);
-
-//     // The Finite Automaton Loop for tokenization
-//     for (let i = 0; i <= processed.length; i++) {
-//         const char = processed[i];
-//         const isEOF = i === processed.length; // End of File/String
-
-//         switch (currentState) {
-//             case 'START':
-//                 if (isEOF) break;
-//                 if (isDigit(char)) {
-//                     currentState = 'INTEGER';
-//                     currentToken += char;
-//                 } else if (isLetter(char)) {
-//                     currentState = 'WORD';
-//                     currentToken += char;
-//                 } else if (isOperator(char)) {
-//                     // Operators are single characters, no need to change state, just push
-//                     tokens.push(char); 
-//                 }
-//                 break;
-
-//             case 'INTEGER':
-//                 if (!isEOF && isDigit(char)) {
-//                     currentToken += char; // Stay in INTEGER
-//                 } else if (!isEOF && char === '.') {
-//                     currentState = 'DECIMAL'; // Transition to DECIMAL
-//                     currentToken += char;
-//                 } else {
-//                     // We hit something that isn't a number. 
-//                     // Save the token, reset state, and step back one character to evaluate it from START.
-//                     tokens.push(currentToken);
-//                     currentToken = '';
-//                     currentState = 'START';
-//                     i--; 
-//                 }
-//                 break;
-
-//             case 'DECIMAL':
-//                 if (!isEOF && isDigit(char)) {
-//                     currentToken += char; // Stay in DECIMAL
-//                 } else {
-//                     // End of decimal number
-//                     tokens.push(currentToken);
-//                     currentToken = '';
-//                     currentState = 'START';
-//                     i--;
-//                 }
-//                 break;
-
-//             case 'WORD':
-//                 if (!isEOF && isLetter(char)) {
-//                     currentToken += char; // Stay in WORD (building 'sin', 'cos', etc.)
-//                 } else {
-//                     // End of word
-//                     tokens.push(currentToken);
-//                     currentToken = '';
-//                     currentState = 'START';
-//                     i--;
-//                 }
-//                 break;
-//         }
-//     }
-
-//     // Unary minus handling (you can keep your existing logic for this loop)
-//     const finalTokens = [];
-//     for (let i = 0; i < tokens.length; i++) {
-//         let token = tokens[i];
-//         const prev = finalTokens[finalTokens.length - 1];
-//         // Handle Unary Minuses
-//         if (token === "-" && (!prev || prev === "(" || "+-*/^".includes(prev))) {
-//              if (tokens[i + 1] && /[a-z]/i.test(tokens[i + 1])) {
-//                 finalTokens.push("-" + tokens[++i]); // -cos, -x
-//              } else if (tokens[i + 1] && !isNaN(tokens[i+1])) {
-//                  finalTokens.push("-" + tokens[++i]); // -5
-//              } else {
-//                 finalTokens.push("-1", "*"); // fallback
-//              }
-//         } else {
-//             finalTokens.push(token);
-//         }
-//     }
-
-//     return finalTokens;
-// }
-
 
 export function tokenize(str) {
-    // 1. Implied Multiplication
+    // Implied Multiplication
     let processed = str.replace(/\s+/g, "");
     processed = processed.replace(/(\d)(?=[a-z\(])/gi, "$1*");  
     processed = processed.replace(/(\))(?=[\dx\(])/gi, "$1*"); 
     processed = processed.replace(/(x)(?=\()/gi, "$1*");        
 
-    // 2. Delegate to your Custom Data Structure
+    // Apply tokenization using the custom Data Structure
     const fsm = new FiniteAutomaton(processed);
     const rawTokens = fsm.run();
     
-    // 3. Handle Unary Minuses
+    // Handle Unary Minuses
     const tokens = [];
     for (let i = 0; i < rawTokens.length; i++) {
         let token = rawTokens[i];
@@ -173,6 +39,14 @@ export function tokenize(str) {
 }
 
 export function infixToPostfix(tokens) {
+    // example: 3x + 2 => 3 * x + 2 => 
+    // Infix: [3, '*', 'x', '+', '2']
+    // Postfix: [3, 'x', '*', 2, '+']
+
+    // more complicated example: 3x^2 + 2sin(x) => 3 * x ^ 2 + 2 * sin(x) => 
+    // Infix: [3, '*', 'x', '^', '2', '+', '2', '*', 'sin', '(', 'x', ')'] 
+    // Postfix: [3, 'x', '2', '^', '*', 2, 'x', 'sin', '*', '+']
+       
     const output = [];
     const stack = [];
     const precedence = { "+": 1, "-": 1, "*": 2, "/": 2, "^": 3,
