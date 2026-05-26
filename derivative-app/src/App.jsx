@@ -51,36 +51,6 @@ function buildFlowData(treeNode) {
     return { nodes, edges };
 }
 
-// function buildRBHierarchyFromSnapshot(snapshotNode, path = "rb") {
-//     if (!snapshotNode) return null;
-
-//     const nodeLabel = (
-//         <div className="rb-label-container">
-//             <div className="rb-key">{snapshotNode.key}</div>
-//             <div className="rb-arrow">➔</div>
-//             <div className="rb-value">{snapshotNode.computedValue}</div>
-//         </div>
-//     );
-
-//     const data = {
-//         id: path,
-//         label: nodeLabel,
-//         rbColor: snapshotNode.color,
-//         children: []
-//     };
-
-//     if (snapshotNode.left) {
-//         const left = buildRBHierarchyFromSnapshot(snapshotNode.left, `${path}-l`);
-//         if (left) data.children.push(left);
-//     }
-
-//     if (snapshotNode.right) {
-//         const right = buildRBHierarchyFromSnapshot(snapshotNode.right, `${path}-r`);
-//         if (right) data.children.push(right);
-//     }
-
-//     return data;
-// }
 
 
 function buildRBHierarchyFromSnapshot(snapshotNode, path = "rb") {
